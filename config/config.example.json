@@ -76,5 +76,9 @@
         "rateLimit": {
             "minTimeout": 30
         }
+    },
+    "mongo": {
+        "uri": "mongodb://localhost:27017",
+        "dbName": "database_name"
     }
 }

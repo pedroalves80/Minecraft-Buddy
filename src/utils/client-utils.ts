@@ -16,7 +16,7 @@ import {
 } from 'discord.js';
 
 import { PermissionUtils, RegexUtils } from './index.js';
-import { Lang } from '../services/index.js';
+import { Lang, Logger } from '../services/index.js';
 
 const FETCH_MEMBER_LIMIT = 20;
 const IGNORED_ERRORS = [
@@ -46,6 +46,7 @@ export class ClientUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to fetch guild', error);
                 throw error;
             }
         }
@@ -67,6 +68,7 @@ export class ClientUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to fetch channel', error);
                 throw error;
             }
         }
@@ -88,6 +90,7 @@ export class ClientUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to fetch user', error);
                 throw error;
             }
         }
@@ -121,6 +124,7 @@ export class ClientUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to fetch guild member', error);
                 throw error;
             }
         }
@@ -147,6 +151,7 @@ export class ClientUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to fetch role', error);
                 throw error;
             }
         }
@@ -183,6 +188,7 @@ export class ClientUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to fetch text channel', error);
                 throw error;
             }
         }
@@ -219,6 +225,7 @@ export class ClientUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to fetch voice channel', error);
                 throw error;
             }
         }

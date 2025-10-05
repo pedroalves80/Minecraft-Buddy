@@ -9,6 +9,8 @@ import {
     User,
 } from 'discord.js';
 
+import { Logger } from '../services/index.js';
+
 const IGNORED_ERRORS = [
     DiscordApiErrors.UnknownMessage,
     DiscordApiErrors.UnknownChannel,
@@ -31,6 +33,7 @@ export class PartialUtils {
                 ) {
                     return;
                 } else {
+                    Logger.error('Failed to fetch user', error);
                     throw error;
                 }
             }
@@ -51,6 +54,7 @@ export class PartialUtils {
                 ) {
                     return;
                 } else {
+                    Logger.error('Failed to fetch message', error);
                     throw error;
                 }
             }
@@ -73,6 +77,7 @@ export class PartialUtils {
                 ) {
                     return;
                 } else {
+                    Logger.error('Failed to fetch message reaction', error);
                     throw error;
                 }
             }

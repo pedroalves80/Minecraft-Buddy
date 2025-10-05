@@ -6,7 +6,7 @@ import typescript from 'typescript';
 import { DevCommandName } from '../../enums/index.js';
 import { Language } from '../../models/enum-helpers/index.js';
 import { EventData } from '../../models/internal-models.js';
-import { Lang } from '../../services/index.js';
+import { Lang, Logger } from '../../services/index.js';
 import { FormatUtils, InteractionUtils, ShardUtils } from '../../utils/index.js';
 import { Command, CommandDeferType } from '../index.js';
 
@@ -45,6 +45,7 @@ export class DevCommand implements Command {
                             );
                             return;
                         } else {
+                            Logger.error('Failed to get server count across shards', error);
                             throw error;
                         }
                     }

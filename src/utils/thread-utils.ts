@@ -1,5 +1,7 @@
 import { DiscordAPIError, RESTJSONErrorCodes as DiscordApiErrors, ThreadChannel } from 'discord.js';
 
+import { Logger } from '../services/index.js';
+
 const IGNORED_ERRORS = [
     DiscordApiErrors.UnknownMessage,
     DiscordApiErrors.UnknownChannel,
@@ -26,6 +28,7 @@ export class ThreadUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to archive thread', error);
                 throw error;
             }
         }
@@ -45,6 +48,7 @@ export class ThreadUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to lock thread', error);
                 throw error;
             }
         }

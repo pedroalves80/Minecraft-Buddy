@@ -5,3 +5,5 @@ export { JobService } from './job-service.js';
 export { Lang } from './lang.js';
 export { Logger } from './logger.js';
 export { MasterApiService } from './master-api-service.js';
+export { MongoService } from './mongo-service.js';
+export { McServerService } from './mc-server-service.js';

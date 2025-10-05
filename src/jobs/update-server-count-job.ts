@@ -56,6 +56,11 @@ export class UpdateServerCountJob extends Job {
                 let res = await this.httpService.post(botSite.url, botSite.authorization, body);
 
                 if (!res.ok) {
+                    Logger.error('Failed to update server count', {
+                        site: botSite.name,
+                        status: res.status,
+                        statusText: res.statusText,
+                    });
                     throw res;
                 }
             } catch (error) {

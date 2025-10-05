@@ -1,7 +1,7 @@
 import { createRequire } from 'node:module';
 import { URL } from 'node:url';
 
-import { HttpService } from './index.js';
+import { HttpService, Logger } from './index.js';
 import {
     LoginClusterResponse,
     RegisterClusterRequest,
@@ -32,6 +32,7 @@ export class MasterApiService {
         );
 
         if (!res.ok) {
+            Logger.error(`Failed to register cluster (status: ${res.status})`);
             throw res;
         }
 
@@ -46,6 +47,7 @@ export class MasterApiService {
         );
 
         if (!res.ok) {
+            Logger.error(`Failed to login cluster (status: ${res.status})`);
             throw res;
         }
 
@@ -59,6 +61,7 @@ export class MasterApiService {
         );
 
         if (!res.ok) {
+            Logger.error(`Failed to mark cluster as ready (status: ${res.status})`);
             throw res;
         }
     }

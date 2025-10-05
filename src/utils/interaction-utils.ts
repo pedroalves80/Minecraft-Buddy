@@ -15,6 +15,8 @@ import {
     WebhookMessageEditOptions,
 } from 'discord.js';
 
+import { Logger } from '../services/index.js';
+
 const IGNORED_ERRORS = [
     DiscordApiErrors.UnknownMessage,
     DiscordApiErrors.UnknownChannel,
@@ -43,6 +45,7 @@ export class InteractionUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to defer reply', error);
                 throw error;
             }
         }
@@ -61,6 +64,7 @@ export class InteractionUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to defer update', error);
                 throw error;
             }
         }
@@ -98,6 +102,7 @@ export class InteractionUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to send interaction reply', error);
                 throw error;
             }
         }
@@ -117,6 +122,7 @@ export class InteractionUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to send interaction autocomplete response', error);
                 throw error;
             }
         }
@@ -142,6 +148,7 @@ export class InteractionUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to edit interaction reply', error);
                 throw error;
             }
         }
@@ -168,6 +175,7 @@ export class InteractionUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to update interaction reply', error);
                 throw error;
             }
         }

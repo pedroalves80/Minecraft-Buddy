@@ -30,6 +30,7 @@ import {
     EventDataService,
     JobService,
     Logger,
+    MongoService,
 } from './services/index.js';
 import { Trigger } from './triggers/index.js';
 
@@ -40,6 +41,7 @@ let Logs = require('../lang/logs.json');
 async function start(): Promise<void> {
     // Services
     let eventDataService = new EventDataService();
+    let mongoService = new MongoService(Config.mongo);
 
     // Client
     let client = new CustomClient({
@@ -53,6 +55,9 @@ async function start(): Promise<void> {
         }),
         enforceNonce: true,
     });
+
+    // Initialize Mongo
+    await mongoService.init();
 
     // Commands
     let commands: Command[] = [

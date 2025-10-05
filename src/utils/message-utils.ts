@@ -14,6 +14,8 @@ import {
     User,
 } from 'discord.js';
 
+import { Logger } from '../services/index.js';
+
 const IGNORED_ERRORS = [
     DiscordApiErrors.UnknownMessage,
     DiscordApiErrors.UnknownChannel,
@@ -48,6 +50,7 @@ export class MessageUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to send message', error);
                 throw error;
             }
         }
@@ -73,6 +76,7 @@ export class MessageUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to reply to message', error);
                 throw error;
             }
         }
@@ -98,6 +102,7 @@ export class MessageUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to edit message', error);
                 throw error;
             }
         }
@@ -114,6 +119,7 @@ export class MessageUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to react to message', error);
                 throw error;
             }
         }
@@ -130,6 +136,7 @@ export class MessageUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to pin/unpin message', error);
                 throw error;
             }
         }
@@ -149,6 +156,7 @@ export class MessageUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to start thread', error);
                 throw error;
             }
         }
@@ -165,6 +173,7 @@ export class MessageUtils {
             ) {
                 return;
             } else {
+                Logger.error('Failed to delete message', error);
                 throw error;
             }
         }
