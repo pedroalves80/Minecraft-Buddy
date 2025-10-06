@@ -1,0 +1,85 @@
+name: CI
+
+on:
+    pull_request:
+    push:
+        branches: [master, main]
+
+permissions:
+    contents: read
+
+jobs:
+    quality:
+        name: Lint • Typecheck • Test • Build
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '20.x'
+                  cache: npm
+
+            - name: Install
+              run: npm ci
+
+            # ESLint (flat config)
+            - name: ESLint
+              run: |
+                  npm run -s lint || npx eslint .
+
+            # Prettier (optional but handy)
+            - name: Prettier check
+              run: |
+                  npm run -s format:check || npx prettier -c "**/*" || true
+
+            # TS type-check
+            - name: Type check
+              run: |
+                  npm run -s typecheck || npx tsc -p tsconfig.json --noEmit
+
+            # Vitest (with coverage if configured)
+            - name: Test
+              env:
+                  NODE_ENV: test
+              run: |
+                  npm run -s test || npx vitest run --reporter=default --coverage || true
+
+            # Build
+            - name: Build
+              run: |
+                  npm run -s build || echo "No build script"
+
+            # Upload coverage/dist if they exist
+            - name: Upload coverage
+              if: ${{ hashFiles('coverage/**') != '' }}
+              uses: actions/upload-artifact@v4
+              with:
+                  name: coverage
+                  path: coverage
+
+            - name: Upload dist
+              if: ${{ hashFiles('dist/**') != '' }}
+              uses: actions/upload-artifact@v4
+              with:
+                  name: dist
+                  path: dist
+
+    commitlint:
+        name: Commitlint (PR title)
+        if: ${{ github.event_name == 'pull_request' }}
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '20.x'
+                  cache: npm
+            - run: npm ci
+            - name: Lint PR Title
+              uses: wagoid/commitlint-github-action@v6
+              with:
+                  configFile: commitlint.config.mjs

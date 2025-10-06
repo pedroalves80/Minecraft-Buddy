@@ -1,0 +1,42 @@
+name: CodeQL
+
+on:
+    push:
+        branches: [main, master]
+    pull_request:
+        branches: [main, master]
+    schedule:
+        - cron: '0 2 * * 1' # Mondays 02:00 UTC
+
+permissions:
+    contents: read
+    security-events: write
+
+jobs:
+    analyze:
+        name: CodeQL Analyze (JS/TS)
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '20.x'
+                  cache: 'npm'
+
+            - name: Install deps
+              run: npm ci
+
+            # If your build outputs TS -> JS or needs a build step, keep this.
+            - name: Build (optional)
+              run: npm run -s build || echo "No build script"
+
+            - name: Initialize CodeQL
+              uses: github/codeql-action/init@v3
+              with:
+                  languages: javascript-typescript
+
+            - name: Perform CodeQL Analysis
+              uses: github/codeql-action/analyze@v3
