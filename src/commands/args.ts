@@ -57,4 +57,45 @@ export class Args {
             },
         ],
     };
+
+    public static readonly MCSET_ADDRESS: APIApplicationCommandBasicOption = {
+        name: Lang.getRef('arguments.address', Language.Default),
+        name_localizations: Lang.getRefLocalizationMap('arguments.address'),
+        description: Lang.getRef('argDescs.mcsetAddress', Language.Default),
+        description_localizations: Lang.getRefLocalizationMap('argDescs.mcsetAddress'),
+        type: ApplicationCommandOptionType.String,
+    };
+    public static readonly MCSET_EDITION: APIApplicationCommandBasicOption = {
+        name: Lang.getRef('arguments.edition', Language.Default),
+        name_localizations: Lang.getRefLocalizationMap('arguments.edition'),
+        description: Lang.getRef('argDescs.mcsetEdition', Language.Default),
+        description_localizations: Lang.getRefLocalizationMap('argDescs.mcsetEdition'),
+        type: ApplicationCommandOptionType.String,
+        choices: [
+            {
+                name: 'Java',
+                value: 'java',
+            },
+            {
+                name: 'Bedrock',
+                value: 'bedrock',
+            },
+        ],
+    };
+    public static readonly MCSET_PORT: APIApplicationCommandBasicOption = {
+        name: Lang.getRef('arguments.port', Language.Default),
+        name_localizations: Lang.getRefLocalizationMap('arguments.port'),
+        description: Lang.getRef('argDescs.mcsetPort', Language.Default),
+        description_localizations: Lang.getRefLocalizationMap('argDescs.mcsetPort'),
+        type: ApplicationCommandOptionType.Integer,
+        min_value: 1,
+        max_value: 65535,
+    };
+    public static readonly MCSET_DEFAULT: APIApplicationCommandBasicOption = {
+        name: Lang.getRef('arguments.default', Language.Default),
+        name_localizations: Lang.getRefLocalizationMap('arguments.default'),
+        description: Lang.getRef('argDescs.mcsetDefault', Language.Default),
+        description_localizations: Lang.getRefLocalizationMap('argDescs.mcsetDefault'),
+        type: ApplicationCommandOptionType.Boolean,
+    };
 }

@@ -75,6 +75,100 @@ export class MongoService {
 
     // Create necessary indexes here for better performance
     async ensureIndexes(): Promise<void> {
-        // Example: await this.db().collection('users').createIndex({ email: 1 }, { unique: true });
+        const db = this.db();
+
+        try {
+            await Promise.all([
+                db
+                    .collection('guild_servers')
+                    .createIndex({ guildId: 1 }, { name: 'guild_servers__by_guild' }),
+                // only one default per guild
+                db.collection('guild_servers').createIndex(
+                    { guildId: 1, isDefault: 1 },
+                    {
+                        name: 'guild_servers__uniq_default_per_guild',
+                        unique: true,
+                        partialFilterExpression: { isDefault: true },
+                    }
+                ),
+                // optional alias per guild (case-insensitive if you store alias lowercased)
+                db.collection('guild_servers').createIndex(
+                    { guildId: 1, alias: 1 },
+                    {
+                        name: 'guild_servers__uniq_alias_per_guild',
+                        unique: true,
+                        partialFilterExpression: { alias: { $exists: true, $type: 'string' } },
+                    }
+                ),
+            ]);
+
+            // 2) subscriptions
+            await Promise.all([
+                db
+                    .collection('subscriptions')
+                    .createIndex({ guildId: 1 }, { name: 'subs__by_guild' }),
+                db
+                    .collection('subscriptions')
+                    .createIndex({ serverKey: 1 }, { name: 'subs__by_server' }),
+                db
+                    .collection('subscriptions')
+                    .createIndex(
+                        { guildId: 1, channelId: 1, type: 1, serverKey: 1 },
+                        { name: 'subs__uniq_guild_channel_type_server', unique: true }
+                    ),
+            ]);
+
+            // 3) notes
+            await Promise.all([
+                db
+                    .collection('notes')
+                    .createIndex(
+                        { guildId: 1, userId: 1, createdAt: -1 },
+                        { name: 'notes__by_guild_user_recent' }
+                    ),
+                // TTL only when expiresAt is set
+                db.collection('notes').createIndex(
+                    { expiresAt: 1 },
+                    {
+                        name: 'notes__ttl_if_expiresAt',
+                        expireAfterSeconds: 0,
+                        partialFilterExpression: { expiresAt: { $exists: true, $type: 'date' } },
+                    }
+                ),
+            ]);
+
+            // 4) status_events
+            await Promise.all([
+                db
+                    .collection('status_events')
+                    .createIndex({ serverKey: 1, at: -1 }, { name: 'events__by_server_recent' }),
+                db.collection('status_events').createIndex(
+                    { at: 1 },
+                    {
+                        name: 'events__ttl_30d',
+                        expireAfterSeconds: 60 * 60 * 24 * 30, // 30 days
+                    }
+                ),
+            ]);
+
+            // 5) alerts
+            await Promise.all([
+                db
+                    .collection('alerts')
+                    .createIndex({ guildId: 1, at: -1 }, { name: 'alerts__by_guild_recent' }),
+                db.collection('alerts').createIndex(
+                    { at: 1 },
+                    {
+                        name: 'alerts__ttl_14d',
+                        expireAfterSeconds: 60 * 60 * 24 * 14, // 14 days
+                    }
+                ),
+            ]);
+
+            Logger.info('MongoDB indexes ensured');
+        } catch (err) {
+            Logger.error('Error creating indexes', err);
+            throw err;
+        }
     }
 }

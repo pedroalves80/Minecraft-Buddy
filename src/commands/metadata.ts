@@ -69,6 +69,33 @@ export const ChatCommandMetadata: {
         dm_permission: true,
         default_member_permissions: undefined,
     },
+    MCSET: {
+        type: ApplicationCommandType.ChatInput,
+        name: Lang.getRef('chatCommands.mc-set', Language.Default),
+        name_localizations: Lang.getRefLocalizationMap('chatCommands.mc-set'),
+        description: Lang.getRef('commandDescs.mc-set', Language.Default),
+        description_localizations: Lang.getRefLocalizationMap('commandDescs.mc-set'),
+        dm_permission: true,
+        default_member_permissions: undefined,
+        options: [
+            {
+                ...Args.MCSET_ADDRESS,
+                required: true,
+            },
+            {
+                ...Args.MCSET_EDITION,
+                required: false,
+            },
+            {
+                ...Args.MCSET_PORT,
+                required: false,
+            },
+            {
+                ...Args.MCSET_DEFAULT,
+                required: false,
+            },
+        ],
+    },
 };
 
 export const MessageCommandMetadata: {
