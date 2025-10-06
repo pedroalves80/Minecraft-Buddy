@@ -125,6 +125,9 @@
                         ]
                     }
                 ]
+            },
+            "mcSetSuccess": {
+                "description": "Minecraft server info has been set to:\n**Address:** {{ADDRESS}}\n**Edition:** {{EDITION}}\n**Port:** {{PORT}}"
             }
         },
         "validationEmbeds": {
@@ -175,6 +178,10 @@
             "notImplemented": {
                 "description": "This feature has not been implemented yet!",
                 "color": "{{COM:colors.warning}}"
+            },
+            "mcServerOffline": {
+                "description": "The Minecraft server appears to be offline or unreachable. Please check the server address and port, and ensure the server is online.",
+                "color": "{{COM:colors.error}}"
             }
         },
         "channelRegexes": {
@@ -192,7 +199,8 @@
             "dev": "dev",
             "help": "help",
             "info": "info",
-            "test": "test"
+            "test": "test",
+            "mc-set": "mc-set"
         },
         "userCommands": {
             "viewDateJoined": "View Date Joined"
@@ -202,18 +210,27 @@
         },
         "arguments": {
             "command": "command",
-            "option": "option"
+            "option": "option",
+            "address": "address",
+            "edition": "edition",
+            "port": "port",
+            "default": "default"
         },
         "commandDescs": {
             "dev": "Developer use only.",
             "help": "Find help or contact support.",
             "info": "View bot info.",
-            "test": "Run the test command."
+            "test": "Run the test command.",
+            "mc-set": "Set the Minecraft server info for this server."
         },
         "argDescs": {
             "devCommand": "Command.",
             "helpOption": "Option.",
-            "infoOption": "Option."
+            "infoOption": "Option.",
+            "mcsetAddress": "The server address (e.g., play.example.com).",
+            "mcsetEdition": "The Minecraft edition (Java or Bedrock).",
+            "mcsetPort": "The server port (default is 25565 for Java and 19132 for Bedrock).",
+            "mcsetDefault": "Use default address and port."
         },
         "fields": {
             "commands": "Commands",

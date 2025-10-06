@@ -1,0 +1,56 @@
+services:
+    mongo:
+        image: mongo:7
+        restart: unless-stopped
+        command: ['--bind_ip_all']
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+        ports:
+            - '27017:27017' # Optional: connect via Compass from host
+        volumes:
+            - mongo_data:/data/db # ✅ persistent DB volume
+            - mongo_config:/data/configdb
+        healthcheck:
+            test:
+                [
+                    'CMD-SHELL',
+                    "mongosh --quiet --eval 'db.runCommand({ ping: 1 }).ok' -u root -p ${MONGO_INITDB_ROOT_PASSWORD} --authenticationDatabase admin || exit 1",
+                ]
+            interval: 10s
+            timeout: 5s
+            retries: 10
+
+    mongo-express:
+        image: mongo-express:1.0.2
+        restart: unless-stopped
+        depends_on:
+            mongo:
+                condition: service_healthy
+        ports:
+            - '8081:8081'
+        environment:
+            ME_CONFIG_MONGODB_ADMINUSERNAME: root
+            ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+            ME_CONFIG_MONGODB_URL: mongodb://root:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/?authSource=admin
+
+    bot:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        restart: unless-stopped
+        depends_on:
+            mongo:
+                condition: service_healthy
+        environment:
+            # your MongoService will read these
+            MONGODB_URI: mongodb://root:${MONGO_INITDB_ROOT_PASSWORD}@mongo:27017/mc_buddy?authSource=admin
+            MONGODB_DB: mc_buddy
+            DISCORD_TOKEN: ${DISCORD_TOKEN}
+        # the bot listens internally on 3001 per your Dockerfile
+        expose:
+            - '3001'
+
+volumes:
+    mongo_data:
+    mongo_config:

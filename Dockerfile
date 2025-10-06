@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:20-bullseye
 
 # Create app directory
 WORKDIR /app
@@ -7,7 +7,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install packages
-RUN npm install
+RUN npm ci 
 
 # Copy the app code
 COPY . .
