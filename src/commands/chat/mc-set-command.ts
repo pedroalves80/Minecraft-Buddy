@@ -54,8 +54,6 @@ export class McSetCommand implements Command {
                 type: editionOption ?? 'java',
             });
 
-            console.log(serverStatus?.players?.sample);
-
             if (!serverStatus) {
                 await InteractionUtils.send(
                     intr,
