@@ -1,7 +1,7 @@
 name: Release
 on:
     workflow_run:
-        workflows: ['CI']
+        workflows: ['CI'] # must match the 'name:' at top of ci.yml
         types: [completed]
 
 permissions:
@@ -11,21 +11,23 @@ permissions:
 
 jobs:
     release:
-        # only run after successful CI AND only for master branch
+        # Only after successful CI, and only for master (or main if you keep both)
         if: >
             ${{
               github.event.workflow_run.conclusion == 'success' &&
-              github.event.workflow_run.head_branch == 'master'
+              (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'pull_request') &&
+              (github.event.workflow_run.head_branch == 'master' || github.event.workflow_run.head_branch == 'main')
             }}
         runs-on: ubuntu-latest
         env:
             HUSKY: 0
         steps:
-            - name: Debug context (optional)
+            - name: Debug workflow_run context
               run: |
-                  echo "event: ${{ github.event.workflow_run.event }}"
-                  echo "head_branch: ${{ github.event.workflow_run.head_branch }}"
-                  echo "conclusion: ${{ github.event.workflow_run.conclusion }}"
+                  echo "name:      ${{ github.event.workflow_run.name }}"
+                  echo "event:     ${{ github.event.workflow_run.event }}"
+                  echo "branch:    ${{ github.event.workflow_run.head_branch }}"
+                  echo "status:    ${{ github.event.workflow_run.conclusion }}"
 
             - uses: actions/checkout@v4
               with:
@@ -36,7 +38,7 @@ jobs:
                   node-version: '20.x'
                   cache: 'npm'
 
-            - run: npm ci --omit=dev
+            - run: npm ci # don't omit dev; semantic-release is a devDep
 
             - name: Semantic Release
               env:
