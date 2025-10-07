@@ -1,9 +1,8 @@
 name: Release
 on:
     workflow_run:
-        workflows: ['CI'] # <- must match the exact name in ci.yml
+        workflows: ['CI']
         types: [completed]
-        branches: [master]
 
 permissions:
     contents: write
@@ -12,18 +11,33 @@ permissions:
 
 jobs:
     release:
-        if: ${{ github.event.workflow_run.conclusion == 'success' }}
+        # only run after successful CI AND only for master branch
+        if: >
+            ${{
+              github.event.workflow_run.conclusion == 'success' &&
+              github.event.workflow_run.head_branch == 'master'
+            }}
         runs-on: ubuntu-latest
         env:
             HUSKY: 0
         steps:
+            - name: Debug context (optional)
+              run: |
+                  echo "event: ${{ github.event.workflow_run.event }}"
+                  echo "head_branch: ${{ github.event.workflow_run.head_branch }}"
+                  echo "conclusion: ${{ github.event.workflow_run.conclusion }}"
+
             - uses: actions/checkout@v4
-              with: { fetch-depth: 0 }
+              with:
+                  fetch-depth: 0
+
             - uses: actions/setup-node@v4
               with:
                   node-version: '20.x'
                   cache: 'npm'
+
             - run: npm ci --omit=dev
+
             - name: Semantic Release
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
