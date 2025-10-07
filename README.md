@@ -1,133 +1,139 @@
-# Discord Bot TypeScript Template
+# 🧱 Minecraft Buddy
 
-[![discord.js](https://img.shields.io/github/package-json/dependency-version/KevinNovak/Discord-Bot-TypeScript-Template/discord.js)](https://discord.js.org/)
-[![License](https://img.shields.io/badge/license-MIT-blue)](https://opensource.org/licenses/MIT)
-[![Stars](https://img.shields.io/github/stars/KevinNovak/Discord-Bot-TypeScript-Template.svg)](https://github.com/KevinNovak/Discord-Bot-TypeScript-Template/stargazers)
-[![Pull Requests](https://img.shields.io/badge/Pull%20Requests-Welcome!-brightgreen)](https://github.com/KevinNovak/Discord-Bot-TypeScript-Template/pulls)
+![CI](https://github.com/pedroalves80/Minecraft-Buddy/actions/workflows/ci.yml/badge.svg)
+![Docker](https://github.com/pedroalves80/Minecraft-Buddy/actions/workflows/docker.yml/badge.svg)
+![CodeQL](https://github.com/pedroalves80/Minecraft-Buddy/actions/workflows/codeql.yml/badge.svg)
+[![License](https://img.shields.io/github/license/pedroalves80/Minecraft-Buddy)](LICENSE)
 
-**Discord bot** - A discord.js bot template written with TypeScript.
+> Your friendly Discord companion for Minecraft servers — status tracking, player lists, server alerts, and more!
 
-## Introduction
+---
 
-This template was created to give developers a starting point for new Discord bots, so that much of the initial setup can be avoided and developers can instead focus on meaningful bot features. Developers can simply copy this repo, follow the [setup instructions](#setup) below, and have a working bot with many [boilerplate features](#features) already included!
+## ✨ Overview
 
-For help using this template, feel free to [join our support server](https://discord.gg/c9kQktCbsE)!
+**Minecraft Buddy** is a TypeScript-powered Discord bot built to make Minecraft server management easier for small communities.  
+It lets you track server status, manage player notes, subscribe to online notifications, and share coordinates or map pins — all from Discord.
 
-[![Discord Shield](https://discord.com/api/guilds/660711235766976553/widget.png?style=shield)](https://discord.gg/c9kQktCbsE)
+Built on top of:
 
-## Features
+- 🧩 **discord.js** for Discord API interaction
+- 🧠 **MongoDB** for persistence
+- 🧪 **Vitest** for testing
+- ⚙️ **ESLint + Prettier + Commitlint** for clean code
+- 🐳 **Docker + GitHub Actions** for CI/CD automation
 
-### Built-In Bot Features:
+---
 
-- Basic command structure.
-- Rate limits and command cooldowns.
-- Welcome message when joining a server.
-- Shows server count in bot status.
-- Posts server count to popular bot list websites.
-- Support for multiple languages.
+## 🏗️ Features
 
-### Developer Friendly:
+| Category           | Description                                                       |
+| ------------------ | ----------------------------------------------------------------- |
+| 🖥️ Server Status   | `/mc-status` — Check if your Minecraft server is online           |
+| 👥 Player List     | `/mc-players` — View currently connected players                  |
+| 📝 Notes           | `/mc-note` — Add, list, or delete player notes                    |
+| 🧭 Map Pins        | `/mc-pin` — Store base/landmark coordinates                       |
+| 🔔 Subscriptions   | `/mc-subscribe` — Notify users when the server starts             |
+| 🧰 Admin           | `/rcon`, `/mc-set`, `/admin-sync` — Optional management utilities |
+| ⏰ Watcher         | Periodic cron job to monitor server status                        |
+| 💾 MongoDB Indexes | TTL + guild-based indexes for optimized storage                   |
 
-- Written with TypeScript.
-- Uses the [discord.js](https://discord.js.org/) framework.
-- Built-in debugging setup for VSCode.
-- Written with [ESM](https://nodejs.org/api/esm.html#introduction) for future compatibility with packages.
-- Support for running with the [PM2](https://pm2.keymetrics.io/) process manger.
-- Support for running with [Docker](https://www.docker.com/).
+---
 
-### Scales as Your Bot Grows:
+## 🚀 Getting Started
 
-- Supports [sharding](https://discordjs.guide/sharding/) which is required when your bot is in 2500+ servers.
-- Supports [clustering](https://github.com/KevinNovak/Discord-Bot-TypeScript-Template-Master-Api) which allows you to run your bot on multiple machines.
+### 1. Clone and Install
 
-## Commands
+    git clone https://github.com/pedroalves80/Minecraft-Buddy.git
+    cd Minecraft-Buddy
+    npm ci
 
-This bot has a few example commands which can be modified as needed.
+### 2. Configure Environment
 
-### Help Command
+Create a `.env` file in the project root:
 
-A `/help` command to get help on different areas of the bot or to contact support:
+    DISCORD_TOKEN=your_discord_bot_token
+    CLIENT_ID=your_client_id
+    MONGODB_URI=mongodb://localhost:27017/minecraft-buddy
 
-![](https://i.imgur.com/UUA4WzL.png)
+Also change all the `.example.json` in the `config/` folder to `.json` and adjust settings as needed.
 
-![](https://i.imgur.com/YtDdmTe.png)
+### 3. Run Locally
 
-![](https://i.imgur.com/JXMisap.png)
+    npm start
 
-### Info Command
+---
 
-A `/info` command to get information about the bot or links to different resources.
+## 🧪 Testing & Linting
 
-![](https://i.imgur.com/0kKOaWM.png)
+| Command                | Purpose                                |
+| ---------------------- | -------------------------------------- |
+| `npm run test`         | Run unit/integration tests with Vitest |
+| `npm run lint`         | Lint code with ESLint                  |
+| `npm run typecheck`    | Verify TypeScript types                |
+| `npm run format:check` | Check Prettier formatting              |
 
-### Test Command
+---
 
-A generic command, `/test`, which can be copied to create additional commands.
+## 🐳 Docker Support
 
-![](https://i.imgur.com/lqjkNKM.png)
+Build and run the bot in Docker:
 
-### Dev Command
+    docker build -t minecraft-buddy .
+    docker run -d --name mc-buddy \
+      -e DISCORD_TOKEN=your_token \
+      -e CLIENT_ID=your_id \
+      -e MONGODB_URI=mongodb://mongo:27017/minecraft-buddy \
+      minecraft-buddy
 
-A `/dev` command which can only be run by the bot developer. Shows developer information, but can be extended to perform developer-only actions.
+or use **Docker Compose** (recommended):
 
-![](https://i.imgur.com/2o1vEno.png)
+    version: '3.8'
+    services:
+      mongo:
+        image: mongo:latest
+        volumes:
+          - mongo-data:/data/db
+      bot:
+        build: .
+        depends_on:
+          - mongo
+        env_file: .env
+    volumes:
+      mongo-data:
 
-### Welcome Message
+---
 
-A welcome message is sent to the server and owner when the bot is added.
+## ⚙️ Continuous Integration
 
-![](https://i.imgur.com/QBw8H8v.png)
+GitHub Actions automatically handle:
 
-## Setup
+- ✅ **CI:** Lint, typecheck, test, and build on every PR
+- 🐳 **Docker:** Build and push image to GHCR
+- 🛡️ **CodeQL:** Scan for security issues
 
-1. Copy example config files.
-    - Navigate to the `config` folder of this project.
-    - Copy all files ending in `.example.json` and remove the `.example` from the copied file names.
-        - Ex: `config.example.json` should be copied and renamed as `config.json`.
-2. Obtain a bot token.
-    - You'll need to create a new bot in your [Discord Developer Portal](https://discord.com/developers/applications/).
-        - See [here](https://www.writebots.com/discord-bot-token/) for detailed instructions.
-        - At the end you should have a **bot token**.
-3. Modify the config file.
-    - Open the `config/config.json` file.
-    - You'll need to edit the following values:
-        - `client.id` - Your discord bot's [user ID](https://techswift.org/2020/04/22/how-to-find-your-user-id-on-discord/).
-        - `client.token` - Your discord bot's token.
-4. Install packages.
-    - Navigate into the downloaded source files and type `npm install`.
-5. Register commands.
-    - In order to use slash commands, they first [have to be registered](https://discordjs.guide/creating-your-bot/command-deployment.html).
-    - Type `npm run commands:register` to register the bot's commands.
-        - Run this script any time you change a command name, structure, or add/remove commands.
-        - This is so Discord knows what your commands look like.
-        - It may take up to an hour for command changes to appear.
+See:
 
-## Start Scripts
+- `.github/workflows/ci.yml`
+- `.github/workflows/docker.yml`
+- `.github/workflows/codeql.yml`
 
-You can run the bot in multiple modes:
+---
 
-1. Normal Mode
-    - Type `npm start`.
-    - Starts a single instance of the bot.
-2. Manager Mode
-    - Type `npm run start:manager`.
-    - Starts a shard manager which will spawn multiple bot shards.
-3. PM2 Mode
-    - Type `npm run start:pm2`.
-    - Similar to Manager Mode but uses [PM2](https://pm2.keymetrics.io/) to manage processes.
+## 🤝 Contributing
 
-## Bots Using This Template
+1. Fork the repo
+2. Create your feature branch (`git checkout -b feature/amazing-idea`)
+3. Commit changes using [Conventional Commits](https://www.conventionalcommits.org/)
+4. Push and open a PR 🚀
 
-A list of Discord bots using this template.
+Pre-commit hooks run **ESLint**, **Prettier**, and **Commitlint** to keep code consistent.
 
-| Bot                                                                    | Servers                                                       |
-| ---------------------------------------------------------------------- | ------------------------------------------------------------- |
-| [Birthday Bot](https://top.gg/bot/656621136808902656)                  | ![](https://top.gg/api/widget/servers/656621136808902656.svg) |
-| [QOTD Bot](https://top.gg/bot/713586207119900693)                      | ![](https://top.gg/api/widget/servers/713586207119900693.svg) |
-| [Friend Time](https://top.gg/bot/471091072546766849)                   | ![](https://top.gg/api/widget/servers/471091072546766849.svg) |
-| [Bento](https://top.gg/bot/787041583580184609)                         | ![](https://top.gg/api/widget/servers/787041583580184609.svg) |
-| [NFT-Info](https://top.gg/bot/902249456072818708)                      | ![](https://top.gg/api/widget/servers/902249456072818708.svg) |
-| [Skylink-IF](https://top.gg/bot/929527099922993162)                    | ![](https://top.gg/api/widget/servers/929527099922993162.svg) |
-| [Topcoder TC-101](https://github.com/topcoder-platform/tc-discord-bot) |                                                               |
+---
 
-Don't see your bot listed? [Contact us](https://discord.gg/c9kQktCbsE) to have your bot added!
+## 🧠 License
+
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
+
+---
+
+> Built with ❤️ by [Pedro Alves](https://github.com/pedroalves80)
